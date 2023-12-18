@@ -30,7 +30,7 @@ else
    echo "You are root user"
 fi   # fi means reverse of if, indicating condition end
 
-dnf install maven -y
+dnf install maven -y &>> $LOGFILE
 
 id roboshop  #if roboshop user does not exist, then it is failure
 if [ $? -ne 0 ]
@@ -41,15 +41,7 @@ else
     echo -e "roboshop user already exist $Y SKIPPING $N"
 fi        
 
-
-    VALIDATE $? "roboshop user creation"
-else
-    echo -e "roboshop user already exist $Y SKIPPING $N"
-fi        
-
-VALIDATE $? "creating roboshop user" 
-
-mkdir -p /app
+mkdir -p /app &>> $LOGFILE
 
 VALIDATE $? "creating app directory"
 
