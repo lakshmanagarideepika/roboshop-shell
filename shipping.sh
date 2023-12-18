@@ -59,22 +59,45 @@ VALIDATE $? "Downloading catalogue application"
 
 cd /app 
 
-unzip -o /tmp/shipping.zip
+VALIDATE $? "moving to app directory"   
 
-mvn clean package
+unzip -o /tmp/shipping.zip   &>> $LOGFILE
 
-mv target/shipping-1.0.jar shipping.jar
+VALIDATE $? "unzipping shipping"
 
-cp /home/centos/roboshop-shell/shipping.service /etc/systemd/system/shipping.service
+mvn clean package   &>> $LOGFILE
 
-systemctl daemon-reload
+VALIDATE $? "Installing dependencies"
 
-systemctl enable shipping 
+mv target/shipping-1.0.jar shipping.jar   &>> $LOGFILE
 
-systemctl start shipping
+VALIDATE $? "renaming jar file"
 
-dnf install mysql -y
+cp /home/centos/roboshop-shell/shipping.service /etc/systemd/system/shipping.service   &>> $LOGFILE
 
-mysql -h mysql.starlad.online -uroot -pRoboShop@1 < /app/schema/shipping.sql 
+VALIDATE $? "copying shipping service"
 
-systemctl restart shipping
+systemctl daemon-reload   &>> $LOGFILE
+
+VALIDATE $? "daemon reload"
+
+systemctl enable shipping    &>> $LOGFILE
+
+VALIDATE $? "enable shipping" 
+
+systemctl start shipping   &>> $LOGFILE
+
+VALIDATE $? "start shipping"
+
+dnf install mysql -y   &>> $LOGFILE
+
+VALIDATE $? "install mysql client"
+
+mysql -h mysql.starlad.online -uroot -pRoboShop@1 < /app/schema/shipping.sql   &>> $LOGFILE
+
+VALIDATE $? "loading shipping data"
+
+systemctl restart shipping   &>> $LOGFILE
+
+VALIDATE $? "restart shipping" 
+
